@@ -7,12 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-typedef void (^CDZStringResultBlock)(NSString *string);
+#import "CDZPickerComponentObject.h"
+
+typedef void (^CDZCancelBlock)(void);
+typedef void (^CDZConfirmBlock)(NSArray<NSString *> *stringArray);
 
 @interface CDZPicker : UIView
+
+
 + (void)showPickerInView:(UIView *)view
-        withObjectsArray:(NSArray *)array
-          withlastString:(NSString *)string
-         withStringBlock:(CDZStringResultBlock)stringBlock;
+          withComponents:(NSArray<CDZPickerComponentObject *> *)componentArray
+                 confirm:(CDZConfirmBlock)confirmBlock
+                  cancel:(CDZCancelBlock)cancelBlcok;
+
++ (void)showPickerInView:(UIView *)view
+              withString:(NSArray<NSString *> *)stringArray
+                 confirm:(CDZConfirmBlock)confirmBlock
+                  cancel:(CDZCancelBlock)cancelBlcok;
 
 @end

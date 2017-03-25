@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA38A3551E86706E00B13CD5 /* CDZPickerComponentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DA38A3541E86706E00B13CD5 /* CDZPickerComponentObject.m */; };
 		DAA121A71DDF048000A52CC1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA121A61DDF048000A52CC1 /* main.m */; };
 		DAA121AA1DDF048000A52CC1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA121A91DDF048000A52CC1 /* AppDelegate.m */; };
 		DAA121AD1DDF048000A52CC1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA121AC1DDF048000A52CC1 /* ViewController.m */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DA38A3531E86706E00B13CD5 /* CDZPickerComponentObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDZPickerComponentObject.h; path = CDZPicker/CDZPickerComponentObject.h; sourceTree = "<group>"; };
+		DA38A3541E86706E00B13CD5 /* CDZPickerComponentObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDZPickerComponentObject.m; path = CDZPicker/CDZPickerComponentObject.m; sourceTree = "<group>"; };
 		DAA121A21DDF048000A52CC1 /* CDZPickerViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CDZPickerViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAA121A61DDF048000A52CC1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DAA121A81DDF048000A52CC1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -88,6 +91,8 @@
 			children = (
 				DAA121BC1DDF05F600A52CC1 /* CDZPicker.h */,
 				DAA121BD1DDF05F700A52CC1 /* CDZPicker.m */,
+				DA38A3531E86706E00B13CD5 /* CDZPickerComponentObject.h */,
+				DA38A3541E86706E00B13CD5 /* CDZPickerComponentObject.m */,
 			);
 			name = CDZPicker;
 			sourceTree = "<group>";
@@ -165,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAA121AD1DDF048000A52CC1 /* ViewController.m in Sources */,
+				DA38A3551E86706E00B13CD5 /* CDZPickerComponentObject.m in Sources */,
 				DAA121BE1DDF05F700A52CC1 /* CDZPicker.m in Sources */,
 				DAA121AA1DDF048000A52CC1 /* AppDelegate.m in Sources */,
 				DAA121A71DDF048000A52CC1 /* main.m in Sources */,
@@ -324,6 +330,7 @@
 				DAA121BB1DDF048000A52CC1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
