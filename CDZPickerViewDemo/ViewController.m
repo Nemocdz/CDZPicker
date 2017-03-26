@@ -10,8 +10,11 @@
 #import "CDZPicker.h"
 
 @interface ViewController ()
-- (IBAction)showPicker:(UIButton *)sender;
+
 @property (strong, nonatomic) IBOutlet UILabel *label;
+- (IBAction)single:(UIButton *)sender;
+- (IBAction)multiNotLInk:(UIButton *)sender;
+- (IBAction)multiLink:(UIButton *)sender;
 
 
 @end
@@ -25,23 +28,36 @@
 
 
 - (IBAction)showPicker:(UIButton *)sender {
+    
+}
+- (IBAction)single:(UIButton *)sender {
+    [CDZPicker showPickerInView:self.view withStrings:@[@"0",@"1",@"2"] confirm:^(NSArray<NSString *> *stringArray) {
+        self.label.text = stringArray.firstObject;
+    } cancel:nil];
+}
+
+
+- (IBAction)multiNotLInk:(UIButton *)sender {
+    [CDZPicker showPickerInView:self.view withStringArrays:@[@[@"0",@"1",@"2"],@[@"0",@"1",@"2",@"3"]] confirm:^(NSArray<NSString *> *stringArray) {
+        self.label.text = [stringArray componentsJoinedByString:@","];
+    } cancel:nil];
+}
+
+- (IBAction)multiLink:(UIButton *)sender {
     CDZPickerComponentObject *obj0 = [[CDZPickerComponentObject alloc]init];
     obj0.text = @"0";
     
-    
     CDZPickerComponentObject *obj00 = [[CDZPickerComponentObject alloc]init];
     obj00.text = @"00";
-
+    
     CDZPickerComponentObject *obj01 = [[CDZPickerComponentObject alloc]init];
     obj01.text = @"01";
-    
     
     CDZPickerComponentObject *obj000 = [[CDZPickerComponentObject alloc]init];
     obj000.text = @"000";
     
     CDZPickerComponentObject *obj001 = [[CDZPickerComponentObject alloc]init];
     obj001.text = @"001";
-    
     
     CDZPickerComponentObject *obj0000 = [[CDZPickerComponentObject alloc]init];
     obj0000.text = @"0000";
@@ -51,7 +67,7 @@
     
     CDZPickerComponentObject *obj1 = [[CDZPickerComponentObject alloc]init];
     obj1.text = @"1";
-
+    
     CDZPickerComponentObject *obj10 = [[CDZPickerComponentObject alloc]init];
     obj10.text = @"10";
     
@@ -76,14 +92,9 @@
     
     NSArray *array = @[obj0,obj1];
     
-    [CDZPicker showPickerInView:self.view
-                 withComponents:array
-                        confirm:^(NSArray<NSString *> *stringArray) {
-                            self.label.text = [stringArray componentsJoinedByString:@","];
-                        }
-                         cancel:^{
-                            
-                        }];
-    
+    [CDZPicker showPickerInView:self.view withComponents:array confirm:^(NSArray<NSString *> *stringArray) {
+        self.label.text = [stringArray componentsJoinedByString:@","];
+    } cancel:nil];
+
 }
 @end

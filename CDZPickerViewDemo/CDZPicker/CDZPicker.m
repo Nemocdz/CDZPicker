@@ -14,12 +14,16 @@ static const int pickerViewHeight = 248;
 static const int toolBarHeight = 44;
 
 @interface CDZPicker()<UIPickerViewDelegate,UIPickerViewDataSource>
+
+@property (nonatomic, assign) BOOL isLinkage;
 @property (nonatomic, assign) NSInteger numberOfComponents;
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) NSArray<CDZPickerComponentObject *> *componetArray;
 @property (nonatomic, copy) CDZConfirmBlock confirmBlock;
 @property (nonatomic, copy) CDZCancelBlock cancelBlock;
+
+@property (nonatomic, strong) NSArray<NSArray <NSString*> *> *stringArrays;
 
 @property (nonatomic, strong) UIPickerView *pickerView;
 @property (nonatomic, strong) UIButton *confirmButton;
@@ -46,6 +50,7 @@ static const int toolBarHeight = 44;
                  confirm:(CDZConfirmBlock)confirmBlock
                   cancel:(CDZCancelBlock)cancelBlcok{
     CDZPicker *pickerView = [[CDZPicker alloc]initWithFrame:view.frame];
+    pickerView.isLinkage = YES;
     pickerView.componetArray = componentArray;
     pickerView.confirmBlock = confirmBlock;
     pickerView.cancelBlock = cancelBlcok;
@@ -57,7 +62,7 @@ static const int toolBarHeight = 44;
 
 
 + (void)showPickerInView:(UIView *)view
-              withString:(NSArray<NSString *> *)stringArray
+             withStrings:(NSArray<NSString *> *)stringArray
                  confirm:(CDZConfirmBlock)confirmBlock
                   cancel:(CDZCancelBlock)cancelBlcok{
     CDZPicker *pickerView = [[CDZPicker alloc]initWithFrame:view.frame];
@@ -68,7 +73,23 @@ static const int toolBarHeight = 44;
         object.text = string;
         [arrayM addObject:object];
     }
+    
+    pickerView.isLinkage = YES;
     pickerView.componetArray = [arrayM copy];
+    pickerView.confirmBlock = confirmBlock;
+    pickerView.cancelBlock = cancelBlcok;
+    [pickerView config];
+    [view addSubview:pickerView];
+}
+
+
++ (void)showPickerInView:(UIView *)view
+        withStringArrays:(NSArray<NSArray<NSString *> *> *)arrays
+                 confirm:(CDZConfirmBlock)confirmBlock
+                  cancel:(CDZCancelBlock)cancelBlcok{
+    CDZPicker *pickerView = [[CDZPicker alloc]initWithFrame:view.frame];
+    pickerView.isLinkage = NO;
+    pickerView.stringArrays = arrays;
     pickerView.confirmBlock = confirmBlock;
     pickerView.cancelBlock = cancelBlcok;
     [pickerView config];
@@ -90,6 +111,7 @@ static const int toolBarHeight = 44;
 
 
 #pragma mark - event response
+
 - (void)confirm:(UIButton *)button{
     if (self.confirmBlock){
         self.confirmBlock([self resultStringArray]);
@@ -113,16 +135,25 @@ static const int toolBarHeight = 44;
 
 - (NSArray *)resultStringArray{
     NSMutableArray<NSString *> *arrayM = [NSMutableArray array];
-    NSInteger indexRow = [self.dataArray[0] integerValue];
-    CDZPickerComponentObject *object = self.componetArray[indexRow];
-    if (object.text.length > 0) {
-        [arrayM addObject:object.text];
+   
+    if (!_isLinkage) {
+        for (NSInteger index = 0; index < _numberOfComponents; index++) {
+            NSInteger indexRow = [self.dataArray[index] integerValue];
+            [arrayM addObject:self.stringArrays[index][indexRow]];
+        }
     }
-    for (NSInteger index = 1; index < _numberOfComponents; index++) {
-        indexRow = [self.dataArray[index] integerValue];
-        object = [self objectAtIndex:indexRow inObject:object];
+    else{
+        NSInteger indexRow = [self.dataArray[0] integerValue];
+        CDZPickerComponentObject *object = self.componetArray[indexRow];
         if (object.text.length > 0) {
             [arrayM addObject:object.text];
+        }
+        for (NSInteger index = 1; index < _numberOfComponents; index++) {
+            indexRow = [self.dataArray[index] integerValue];
+            object = [self objectAtIndex:indexRow inObject:object];
+            if (object.text.length > 0) {
+                [arrayM addObject:object.text];
+            }
         }
     }
     return [arrayM copy];
@@ -136,15 +167,20 @@ static const int toolBarHeight = 44;
 }
 
 - (NSInteger)numberOFComponents{
-    NSInteger index;
-    CDZPickerComponentObject *object = self.componetArray.firstObject;
-    for (index = 1;; index++) {
-        object = [self objectAtIndex:0 inObject:object];
-        if (!object) {
-            break;
-        }
+    if (!_isLinkage) {
+        return self.stringArrays.count;
     }
-    return index;
+    else{
+        NSInteger index;
+        CDZPickerComponentObject *object = self.componetArray.firstObject;
+        for (index = 1;; index++) {
+            object = [self objectAtIndex:0 inObject:object];
+            if (!object) {
+                break;
+            }
+        }
+        return index;
+    }
 }
 
 #pragma mark - PickerDataSource
@@ -154,17 +190,22 @@ static const int toolBarHeight = 44;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    if (component == 0) {
-        return self.componetArray.count;
+    if (!_isLinkage) {
+        return self.stringArrays[component].count;
     }
     else{
-        NSInteger indexRow = [self.dataArray[0] integerValue];
-        CDZPickerComponentObject *object = self.componetArray[indexRow];
-        for (NSInteger index = 1; index < component; index++) {
-            indexRow = [self.dataArray[index] integerValue];
-            object = [self objectAtIndex:indexRow inObject:object];
+        if (component == 0) {
+            return self.componetArray.count;
         }
-        return object.subArray.count;
+        else{
+            NSInteger indexRow = [self.dataArray[0] integerValue];
+            CDZPickerComponentObject *object = self.componetArray[indexRow];
+            for (NSInteger index = 1; index < component; index++) {
+                indexRow = [self.dataArray[index] integerValue];
+                object = [self objectAtIndex:indexRow inObject:object];
+            }
+            return object.subArray.count;
+        }
     }
 }
 
@@ -175,11 +216,17 @@ static const int toolBarHeight = 44;
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
     [self.dataArray setObject:@(row) atIndexedSubscript:component];
+    
+    if (!_isLinkage) {
+        return;
+    }
+    
     if (component < (_numberOfComponents - 1)) {
         [self pickerView:pickerView didSelectRow:0 inComponent:component + 1];
     }
     [pickerView reloadComponent:component];
 }
+
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view{
     //设置分割线的颜色
@@ -194,24 +241,29 @@ static const int toolBarHeight = 44;
     genderLabel.font = [UIFont systemFontOfSize:23.0];
     genderLabel.textColor = [UIColor blackColor];
     
-    CDZPickerComponentObject *object;
-    if (component == 0) {
-        object = self.componetArray[row];
+    if (!_isLinkage) {
+        genderLabel.text = self.stringArrays[component][row];
     }
     else{
-        NSInteger indexRow = [self.dataArray[0] integerValue];
-        object = self.componetArray[indexRow];
-        for (NSInteger index = 1; index <= component; index++) {
-            if (index == component) {
-                object = [self objectAtIndex:row inObject:object];
-            }
-            else{
-                indexRow = [self.dataArray[index] integerValue];
-                object = [self objectAtIndex:indexRow inObject:object];
+        CDZPickerComponentObject *object;
+        if (component == 0) {
+            object = self.componetArray[row];
+        }
+        else{
+            NSInteger indexRow = [self.dataArray[0] integerValue];
+            object = self.componetArray[indexRow];
+            for (NSInteger index = 1; index <= component; index++) {
+                if (index == component) {
+                    object = [self objectAtIndex:row inObject:object];
+                }
+                else{
+                    indexRow = [self.dataArray[index] integerValue];
+                    object = [self objectAtIndex:indexRow inObject:object];
+                }
             }
         }
+        genderLabel.text = object.text;
     }
-    genderLabel.text = object.text;
     return genderLabel;
 }
 
@@ -224,6 +276,7 @@ static const int toolBarHeight = 44;
     }
     return _containerView;
 }
+
 
 
 - (UIButton *)confirmButton{
