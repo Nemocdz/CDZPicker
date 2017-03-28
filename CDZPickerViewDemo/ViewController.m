@@ -31,81 +31,51 @@
     
 }
 - (IBAction)single:(UIButton *)sender {
-    [CDZPicker showPickerInView:self.view withStrings:@[@"0",@"1",@"2"] confirm:^(NSArray<NSString *> *stringArray) {
+    [CDZPicker showPickerInView:self.view withStrings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> *stringArray) {
         self.label.text = stringArray.firstObject;
-    } cancel:nil];
+    }cancel:^{
+        //your code
+    }];
 }
 
 
 - (IBAction)multiNotLInk:(UIButton *)sender {
-    [CDZPicker showPickerInView:self.view withStringArrays:@[@[@"0",@"1",@"2"],@[@"0",@"1",@"2",@"3"]] confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = [stringArray componentsJoinedByString:@","];
-    } cancel:nil];
+    [CDZPicker showPickerInView:self.view withStringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> *stringArray) {
+        self.label.text = [stringArray componentsJoinedByString:@"+"];
+    } cancel:^{
+        // your code
+    }];
 }
 
 - (IBAction)multiLink:(UIButton *)sender {
-    CDZPickerComponentObject *obj0 = [[CDZPickerComponentObject alloc]init];
-    obj0.text = @"0";
+    CDZPickerComponentObject *haizhu = [[CDZPickerComponentObject alloc]initWithText:@"海珠区"];
+    CDZPickerComponentObject *yuexiu = [[CDZPickerComponentObject alloc]initWithText:@"越秀区"];
     
-    CDZPickerComponentObject *obj00 = [[CDZPickerComponentObject alloc]init];
-    obj00.text = @"00";
+    CDZPickerComponentObject *guangzhou = [[CDZPickerComponentObject alloc]initWithText:@"广州市"];
+    guangzhou.subArray = [NSMutableArray arrayWithObjects:haizhu,yuexiu, nil];
     
-    CDZPickerComponentObject *obj01 = [[CDZPickerComponentObject alloc]init];
-    obj01.text = @"01";
+    CDZPickerComponentObject *xiangqiao = [[CDZPickerComponentObject alloc]initWithText:@"湘桥区"];
+    CDZPickerComponentObject *chaozhou = [[CDZPickerComponentObject alloc]initWithText:@"潮州市"];
+    chaozhou.subArray = [NSMutableArray arrayWithObjects:xiangqiao, nil];
     
-    CDZPickerComponentObject *obj000 = [[CDZPickerComponentObject alloc]init];
-    obj000.text = @"000";
+    CDZPickerComponentObject *guangdong = [[CDZPickerComponentObject alloc]initWithText:@"广东省"];
+    guangdong.subArray = [NSMutableArray arrayWithObjects:guangzhou,chaozhou, nil];
     
-    CDZPickerComponentObject *obj001 = [[CDZPickerComponentObject alloc]init];
-    obj001.text = @"001";
-    
-    CDZPickerComponentObject *obj0000 = [[CDZPickerComponentObject alloc]init];
-    obj0000.text = @"0000";
-    
-    CDZPickerComponentObject *obj0001 = [[CDZPickerComponentObject alloc]init];
-    obj0001.text = @"0001";
-    
-    CDZPickerComponentObject *obj00000 = [[CDZPickerComponentObject alloc]init];
-    obj00000.text = @"00000";
-    
-    CDZPickerComponentObject *obj1 = [[CDZPickerComponentObject alloc]init];
-    obj1.text = @"1";
-    
-    CDZPickerComponentObject *obj10 = [[CDZPickerComponentObject alloc]init];
-    obj10.text = @"10";
-    
-    CDZPickerComponentObject *obj11 = [[CDZPickerComponentObject alloc]init];
-    obj11.text = @"11";
+    CDZPickerComponentObject *pixian = [[CDZPickerComponentObject alloc]initWithText:@"郫县"];
 
+    CDZPickerComponentObject *chengdu = [[CDZPickerComponentObject alloc]initWithText:@"成都市"];
+    chengdu.subArray = [NSMutableArray arrayWithObjects:pixian, nil];
     
-    CDZPickerComponentObject *obj100 = [[CDZPickerComponentObject alloc]init];
-    obj100.text = @"100";
+    CDZPickerComponentObject *leshan = [[CDZPickerComponentObject alloc]initWithText:@"乐山市"];
     
-    CDZPickerComponentObject *obj101 = [[CDZPickerComponentObject alloc]init];
-    obj101.text = @"101";
+    CDZPickerComponentObject *sichuan = [[CDZPickerComponentObject alloc]initWithText:@"四川省"];
+    sichuan.subArray = [NSMutableArray arrayWithObjects:chengdu,leshan, nil];
     
-    [obj0.subArray addObject:obj00];
-    [obj0.subArray addObject:obj01];
-    
-    [obj00.subArray addObject:obj000];
-    [obj00.subArray addObject:obj001];
-    
-    [obj000.subArray addObject:obj0000];
-    [obj000.subArray addObject:obj0001];
-    
-    [obj0000.subArray addObject:obj00000];
-    
-    [obj1.subArray addObject:obj10];
-    [obj1.subArray addObject:obj11];
-    
-    [obj10.subArray addObject:obj100];
-    [obj10.subArray addObject:obj101];
-    
-    NSArray *array = @[obj0,obj1];
-    
-    [CDZPicker showPickerInView:self.view withComponents:array confirm:^(NSArray<NSString *> *stringArray) {
+    [CDZPicker showPickerInView:self.view withComponents:@[guangdong,sichuan] confirm:^(NSArray<NSString *> *stringArray) {
         self.label.text = [stringArray componentsJoinedByString:@","];
-    } cancel:nil];
+    }cancel:^{
+        //your code
+    }];
 
 }
 @end

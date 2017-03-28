@@ -167,7 +167,7 @@ static const int toolBarHeight = 44;
             }
         }
     }
-    return [resultArray copy];
+    return resultArray;
 }
 
 - (CDZPickerComponentObject *)objectAtIndex:(NSInteger)index inObject:(CDZPickerComponentObject *)object{

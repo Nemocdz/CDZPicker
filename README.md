@@ -4,7 +4,7 @@ This is a small Picker easy to use. The datas can be linkage.(For example countr
 
 ## Demo Preview
 
-To be update
+![](https://ww4.sinaimg.cn/large/006tNc79ly1fe330ca1zjg30ca0m8wil.gif)
 
 ## Changelog
 
@@ -24,51 +24,68 @@ Add ``pod 'CDZPicker'`` in your Podfile
 
 ``#import "CDZPicker.h"``
 
-- Use single style
+- Single:
 
 ```objective-c
-[CDZPicker showPickerInView:self.view withStrings:@[@"0",@"1",@"2"]//your string array confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = stringArray.firstObject;//your code
-    } cancel:
-    	//your code
-    ];
+[CDZPicker showPickerInView:self.view withStrings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> *stringArray) {
+    self.label.text = stringArray.firstObject;
+}cancel:^{
+    //your code
+ }];
 ```
 
-* Use multi&unlinkage style
+- Multiple & Unlinkage：
 
 ```objective-c
-[CDZPicker showPickerInView:self.view withStringArrays:@[@[@"0",@"1",@"2"],@[@"0",@"1",@"2",@"3"]]//your string array's array
- confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = [stringArray componentsJoinedByString:@","];//your code
-    } cancel:
-   		//your code
-];
+[CDZPicker showPickerInView:self.view withStringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> *stringArray) {
+    self.label.text = [stringArray componentsJoinedByString:@"+"];
+} cancel:^{
+    // your code
+ }];
 ```
 
-- Use multi&linkage style
+- Multiple & Linkage：
+
+  First config the objects and its subArray.
 
 ```objective-c
-CDZPickerComponentObject *obj0 = [[CDZPickerComponentObject alloc]init];
-    obj0.text = @"0";
+CDZPickerComponentObject *haizhu = [[CDZPickerComponentObject alloc]initWithText:@"海珠区"];
+CDZPickerComponentObject *yuexiu = [[CDZPickerComponentObject alloc]initWithText:@"越秀区"];
     
-CDZPickerComponentObject *obj00 = [[CDZPickerComponentObject alloc]init];
-    obj00.text = @"00";
+CDZPickerComponentObject *guangzhou = [[CDZPickerComponentObject alloc]initWithText:@"广州市"];
+guangzhou.subArray = [NSMutableArray arrayWithObjects:haizhu,yuexiu, nil];
+    
+CDZPickerComponentObject *xiangqiao = [[CDZPickerComponentObject alloc]initWithText:@"湘桥区"];
+CDZPickerComponentObject *chaozhou = [[CDZPickerComponentObject alloc]initWithText:@"潮州市"];
+chaozhou.subArray = [NSMutableArray arrayWithObjects:xiangqiao, nil];
+    
+CDZPickerComponentObject *guangdong = [[CDZPickerComponentObject alloc]initWithText:@"广东省"];
+guangdong.subArray = [NSMutableArray arrayWithObjects:guangzhou,chaozhou, nil];
+    
+CDZPickerComponentObject *pixian = [[CDZPickerComponentObject alloc]initWithText:@"郫县"];
 
-[obj0.subArray addObject:obj00];
+CDZPickerComponentObject *chengdu = [[CDZPickerComponentObject alloc]initWithText:@"成都市"];
+chengdu.subArray = [NSMutableArray arrayWithObjects:pixian, nil];
+    
+CDZPickerComponentObject *leshan = [[CDZPickerComponentObject alloc]initWithText:@"乐山市"];
+    
+CDZPickerComponentObject *sichuan = [[CDZPickerComponentObject alloc]initWithText:@"四川省"];
+sichuan.subArray = [NSMutableArray arrayWithObjects:chengdu,leshan, nil];
+```
 
-    [CDZPicker showPickerInView:self.view withComponents:@[obj0]//your componet array
-     confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = [stringArray componentsJoinedByString:@","];//your code
-    } cancel:
-     	//your code
-    ];
-
-
+```objective-c
+[CDZPicker showPickerInView:self.view withComponents:@[guangdong,sichuan] confirm:^(NSArray<NSString *> *stringArray) {
+	self.label.text = [stringArray componentsJoinedByString:@","];
+}cancel:^{
+	 //your code
+ }];
 ```
 
 ## Articles
 
 [iOS中封装一个自定义UIPickerView（Button篇）](http://www.jianshu.com/p/bf7f304ee308)
+
+[iOS中实现一个小巧的多列联动的PickerView](http://www.jianshu.com/p/ab35c440a352)
 
 ## Requirements
 
