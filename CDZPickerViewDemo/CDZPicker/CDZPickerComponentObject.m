@@ -10,8 +10,18 @@
 
 @implementation CDZPickerComponentObject
 - (instancetype)init{
+    return [self initWithText:@"" subArray:[NSMutableArray array]];
+}
+
+- (instancetype)initWithText:(NSString *)text{
+    return [self initWithText:text subArray:[NSMutableArray array]];
+}
+
+
+- (instancetype)initWithText:(NSString *)text subArray:(NSMutableArray *)array{
     if (self = [super init]) {
-        _subArray = [NSMutableArray array];
+        _text = text;
+        _subArray = array;
     }
     return self;
 }

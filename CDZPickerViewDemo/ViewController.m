@@ -65,11 +65,18 @@
     CDZPickerComponentObject *obj0001 = [[CDZPickerComponentObject alloc]init];
     obj0001.text = @"0001";
     
+    CDZPickerComponentObject *obj00000 = [[CDZPickerComponentObject alloc]init];
+    obj00000.text = @"00000";
+    
     CDZPickerComponentObject *obj1 = [[CDZPickerComponentObject alloc]init];
     obj1.text = @"1";
     
     CDZPickerComponentObject *obj10 = [[CDZPickerComponentObject alloc]init];
     obj10.text = @"10";
+    
+    CDZPickerComponentObject *obj11 = [[CDZPickerComponentObject alloc]init];
+    obj11.text = @"11";
+
     
     CDZPickerComponentObject *obj100 = [[CDZPickerComponentObject alloc]init];
     obj100.text = @"100";
@@ -86,7 +93,11 @@
     [obj000.subArray addObject:obj0000];
     [obj000.subArray addObject:obj0001];
     
+    [obj0000.subArray addObject:obj00000];
+    
     [obj1.subArray addObject:obj10];
+    [obj1.subArray addObject:obj11];
+    
     [obj10.subArray addObject:obj100];
     [obj10.subArray addObject:obj101];
     

@@ -18,12 +18,13 @@ static const int toolBarHeight = 44;
 @property (nonatomic, assign) BOOL isLinkage;
 @property (nonatomic, assign) NSInteger numberOfComponents;
 
-@property (nonatomic, strong) NSMutableArray *dataArray;
 @property (nonatomic, strong) NSArray<CDZPickerComponentObject *> *componetArray;
 @property (nonatomic, copy) CDZConfirmBlock confirmBlock;
 @property (nonatomic, copy) CDZCancelBlock cancelBlock;
 
 @property (nonatomic, strong) NSArray<NSArray <NSString*> *> *stringArrays;
+
+@property (nonatomic, strong) NSMutableArray<NSMutableArray <CDZPickerComponentObject *> *> *rowsArray;
 
 @property (nonatomic, strong) UIPickerView *pickerView;
 @property (nonatomic, strong) UIButton *confirmButton;
@@ -37,13 +38,25 @@ static const int toolBarHeight = 44;
 #pragma mark - setup
 
 - (void)config{
-    _numberOfComponents = [self numberOFComponents];
-    _dataArray = [NSMutableArray array];
-    for (NSInteger index = 0; index < _numberOfComponents; index++) {
-        [_dataArray addObject:@(0)];
+    if (!_isLinkage) {
+        _numberOfComponents = self.stringArrays.count;
+    }
+    else{
+        _rowsArray = [NSMutableArray array];
+        CDZPickerComponentObject *object = self.componetArray.firstObject;
+        [_rowsArray setObject:[NSMutableArray arrayWithArray:self.componetArray] atIndexedSubscript:0];
+        for (_numberOfComponents = 1;; _numberOfComponents++) {
+            [_rowsArray setObject:object.subArray atIndexedSubscript:_numberOfComponents];
+            object = [self objectAtIndex:0 inObject:object];
+            if (!object) {
+                break;
+            }
+        }
     }
     [self setupViews];
 }
+
+
 
 + (void)showPickerInView:(UIView *)view
           withComponents:(NSArray<CDZPickerComponentObject *> *)componentArray
@@ -67,15 +80,14 @@ static const int toolBarHeight = 44;
                   cancel:(CDZCancelBlock)cancelBlcok{
     CDZPicker *pickerView = [[CDZPicker alloc]initWithFrame:view.frame];
     
-    NSMutableArray *arrayM = [NSMutableArray array];
+    NSMutableArray *tmp = [NSMutableArray arrayWithCapacity:stringArray.count];
     for (NSString *string in stringArray) {
-        CDZPickerComponentObject *object = [[CDZPickerComponentObject alloc]init];
-        object.text = string;
-        [arrayM addObject:object];
+        CDZPickerComponentObject *object = [[CDZPickerComponentObject alloc]initWithText:string];
+        [tmp addObject:object];
     }
     
     pickerView.isLinkage = YES;
-    pickerView.componetArray = [arrayM copy];
+    pickerView.componetArray = [tmp copy];
     pickerView.confirmBlock = confirmBlock;
     pickerView.cancelBlock = cancelBlcok;
     [pickerView config];
@@ -102,11 +114,12 @@ static const int toolBarHeight = 44;
     self.backgroundColor = BACKGROUND_BLACK_COLOR;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dissView)];
     [self addGestureRecognizer:tap];
-    
     [self addSubview:self.containerView];
+    
     [self.containerView addSubview:self.pickerView];
     [self.containerView addSubview:self.confirmButton];
     [self.containerView addSubview:self.cancelButton];
+    [self.pickerView selectRow:0 inComponent:0 animated:NO];
 }
 
 
@@ -134,29 +147,27 @@ static const int toolBarHeight = 44;
 #pragma mark - private
 
 - (NSArray *)resultStringArray{
-    NSMutableArray<NSString *> *arrayM = [NSMutableArray array];
+    NSMutableArray<NSString *> *resultArray = [NSMutableArray arrayWithCapacity:_numberOfComponents];
    
     if (!_isLinkage) {
         for (NSInteger index = 0; index < _numberOfComponents; index++) {
-            NSInteger indexRow = [self.dataArray[index] integerValue];
-            [arrayM addObject:self.stringArrays[index][indexRow]];
-        }
-    }
-    else{
-        NSInteger indexRow = [self.dataArray[0] integerValue];
-        CDZPickerComponentObject *object = self.componetArray[indexRow];
-        if (object.text.length > 0) {
-            [arrayM addObject:object.text];
-        }
-        for (NSInteger index = 1; index < _numberOfComponents; index++) {
-            indexRow = [self.dataArray[index] integerValue];
-            object = [self objectAtIndex:indexRow inObject:object];
-            if (object.text.length > 0) {
-                [arrayM addObject:object.text];
+            NSInteger indexRow = [self.pickerView selectedRowInComponent:index];
+            NSArray<NSString *> *tmp = self.stringArrays[index];
+            if (tmp.count > 0) {
+                [resultArray addObject:tmp[indexRow]];
             }
         }
     }
-    return [arrayM copy];
+    else{
+        for (NSInteger index = 0; index < _numberOfComponents; index++) {
+            NSInteger indexRow = [self.pickerView selectedRowInComponent:index];
+            NSMutableArray<CDZPickerComponentObject *> *tmp = self.rowsArray[index];
+            if (tmp.count > 0) {
+                [resultArray addObject:tmp[indexRow].text];
+            }
+        }
+    }
+    return [resultArray copy];
 }
 
 - (CDZPickerComponentObject *)objectAtIndex:(NSInteger)index inObject:(CDZPickerComponentObject *)object{
@@ -166,22 +177,6 @@ static const int toolBarHeight = 44;
     return nil;
 }
 
-- (NSInteger)numberOFComponents{
-    if (!_isLinkage) {
-        return self.stringArrays.count;
-    }
-    else{
-        NSInteger index;
-        CDZPickerComponentObject *object = self.componetArray.firstObject;
-        for (index = 1;; index++) {
-            object = [self objectAtIndex:0 inObject:object];
-            if (!object) {
-                break;
-            }
-        }
-        return index;
-    }
-}
 
 #pragma mark - PickerDataSource
 
@@ -194,20 +189,11 @@ static const int toolBarHeight = 44;
         return self.stringArrays[component].count;
     }
     else{
-        if (component == 0) {
-            return self.componetArray.count;
-        }
-        else{
-            NSInteger indexRow = [self.dataArray[0] integerValue];
-            CDZPickerComponentObject *object = self.componetArray[indexRow];
-            for (NSInteger index = 1; index < component; index++) {
-                indexRow = [self.dataArray[index] integerValue];
-                object = [self objectAtIndex:indexRow inObject:object];
-            }
-            return object.subArray.count;
-        }
+        return self.rowsArray[component].count;
     }
 }
+
+
 
 #pragma mark - PickerDelegate
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component{
@@ -215,14 +201,19 @@ static const int toolBarHeight = 44;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
-    [self.dataArray setObject:@(row) atIndexedSubscript:component];
-    
     if (!_isLinkage) {
         return;
     }
     
     if (component < (_numberOfComponents - 1)) {
+        NSMutableArray<CDZPickerComponentObject *> *tmp = self.rowsArray[component];
+        if (tmp.count > 0) {
+            tmp = tmp[row].subArray;
+        }
+        [self.rowsArray setObject:((tmp.count > 0) ? tmp : [NSMutableArray array])  atIndexedSubscript:component + 1];
+        
         [self pickerView:pickerView didSelectRow:0 inComponent:component + 1];
+        [pickerView selectRow:0 inComponent:component + 1 animated:NO];
     }
     [pickerView reloadComponent:component];
 }
@@ -242,30 +233,21 @@ static const int toolBarHeight = 44;
     genderLabel.textColor = [UIColor blackColor];
     
     if (!_isLinkage) {
-        genderLabel.text = self.stringArrays[component][row];
+        NSArray<NSString *> *tmp = self.stringArrays[component];
+        if (tmp.count > 0) {
+            genderLabel.text = tmp[row];
+        }
     }
     else{
-        CDZPickerComponentObject *object;
-        if (component == 0) {
-            object = self.componetArray[row];
+        NSArray<CDZPickerComponentObject *> *tmp = self.rowsArray[component];
+        if (tmp.count > 0) {
+            genderLabel.text = tmp[row].text;
         }
-        else{
-            NSInteger indexRow = [self.dataArray[0] integerValue];
-            object = self.componetArray[indexRow];
-            for (NSInteger index = 1; index <= component; index++) {
-                if (index == component) {
-                    object = [self objectAtIndex:row inObject:object];
-                }
-                else{
-                    indexRow = [self.dataArray[index] integerValue];
-                    object = [self objectAtIndex:indexRow inObject:object];
-                }
-            }
-        }
-        genderLabel.text = object.text;
     }
     return genderLabel;
 }
+
+
 
 #pragma mark - getter
 

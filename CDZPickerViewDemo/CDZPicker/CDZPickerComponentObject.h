@@ -13,4 +13,6 @@
 @property (nonatomic, strong) NSMutableArray<CDZPickerComponentObject *> *subArray;
 @property (nonatomic, copy) NSString *text;
 
+- (instancetype)initWithText:(NSString *)text subArray:(NSMutableArray *)array;
+- (instancetype)initWithText:(NSString *)text;
 @end
