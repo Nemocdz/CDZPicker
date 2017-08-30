@@ -8,7 +8,9 @@ This is a small Picker easy to use. The datas can be linkage.(For example countr
 
 ## Changelog
 
-- Add unlinkage mode
+- Fix Frame when superView is not corret frame
+- Add builder to custom the picker
+- Return Selected Indexs
 
 ## Installation
 
@@ -27,21 +29,21 @@ Add ``pod 'CDZPicker'`` in your Podfile
 - Single:
 
 ```objective-c
-[CDZPicker showPickerInView:self.view withStrings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> *stringArray) {
-    self.label.text = stringArray.firstObject;
-}cancel:^{
-    //your code
- }];
+[CDZPicker showSinglePickerInView:self.view withBuilder:nil strings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = strings.firstObject;
+    }cancel:^{
+        //your code
+    }];
 ```
 
 - Multiple & Unlinkage：
 
 ```objective-c
-[CDZPicker showPickerInView:self.view withStringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> *stringArray) {
-    self.label.text = [stringArray componentsJoinedByString:@"+"];
-} cancel:^{
-    // your code
- }];
+ [CDZPicker showMultiPickerInView:self.view withBuilder:nil stringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = [strings componentsJoinedByString:@"+"];
+    } cancel:^{
+        // your code
+    }];
 ```
 
 - Multiple & Linkage：
@@ -74,11 +76,11 @@ sichuan.subArray = [NSMutableArray arrayWithObjects:chengdu,leshan, nil];
 ```
 
 ```objective-c
-[CDZPicker showPickerInView:self.view withComponents:@[guangdong,sichuan] confirm:^(NSArray<NSString *> *stringArray) {
-	self.label.text = [stringArray componentsJoinedByString:@","];
-}cancel:^{
-	 //your code
- }];
+[CDZPicker showLinkagePickerInView:self.view withBuilder:nil components:@[guangdong,sichuan] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = [strings componentsJoinedByString:@","];
+    }cancel:^{
+        //your code
+    }];
 ```
 
 ## Articles

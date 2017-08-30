@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *label;
 - (IBAction)single:(UIButton *)sender;
-- (IBAction)multiNotLInk:(UIButton *)sender;
+- (IBAction)multiNotLink:(UIButton *)sender;
 - (IBAction)multiLink:(UIButton *)sender;
 
 
@@ -31,17 +31,22 @@
     
 }
 - (IBAction)single:(UIButton *)sender {
-    [CDZPicker showPickerInView:self.view withStrings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = stringArray.firstObject;
+    CDZPickerBuilder *builder = [CDZPickerBuilder new];
+    builder.showMask = YES;
+    builder.cancelTextColor = UIColor.redColor;
+    [CDZPicker showSinglePickerInView:self.view withBuilder:builder strings:@[@"objective-c",@"java",@"python",@"php"] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = strings.firstObject;
+        NSLog(@"strings:%@ indexs:%@",strings,indexs);
     }cancel:^{
         //your code
     }];
 }
 
 
-- (IBAction)multiNotLInk:(UIButton *)sender {
-    [CDZPicker showPickerInView:self.view withStringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = [stringArray componentsJoinedByString:@"+"];
+- (IBAction)multiNotLink:(UIButton *)sender {
+    [CDZPicker showMultiPickerInView:self.view withBuilder:nil stringArrays:@[@[@"MacOS",@"Windows",@"Linux",@"Ubuntu"],@[@"Xcode",@"VSCode",@"Sublime",@"Atom"]] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = [strings componentsJoinedByString:@"+"];
+        NSLog(@"strings:%@ indexs:%@",strings,indexs);
     } cancel:^{
         // your code
     }];
@@ -71,8 +76,9 @@
     CDZPickerComponentObject *sichuan = [[CDZPickerComponentObject alloc]initWithText:@"四川省"];
     sichuan.subArray = [NSMutableArray arrayWithObjects:chengdu,leshan, nil];
     
-    [CDZPicker showPickerInView:self.view withComponents:@[guangdong,sichuan] confirm:^(NSArray<NSString *> *stringArray) {
-        self.label.text = [stringArray componentsJoinedByString:@","];
+    [CDZPicker showLinkagePickerInView:self.view withBuilder:nil components:@[guangdong,sichuan] confirm:^(NSArray<NSString *> * _Nonnull strings, NSArray<NSNumber *> * _Nonnull indexs) {
+        self.label.text = [strings componentsJoinedByString:@","];
+        NSLog(@"strings:%@ indexs:%@",strings,indexs);
     }cancel:^{
         //your code
     }];
